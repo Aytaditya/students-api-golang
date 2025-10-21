@@ -19,9 +19,17 @@ func New() http.HandlerFunc {
 		err := json.NewDecoder(r.Body).Decode(&student)
 		// checking if error is empty body
 		if errors.Is(err, io.EOF) {
-			response.WriteJson(w, http.StatusBadRequest, err.Error())
+			response.WriteJson(w, http.StatusBadRequest, response.GeneralError(err))
 			return
 		}
+
+		// if there is some other error (apart from empty body)
+		if err != nil {
+			response.WriteJson(w, http.StatusInternalServerError, response.GeneralError(err))
+			return
+		}
+
+		// validating the request
 
 		response.WriteJson(w, http.StatusCreated, map[string]string{"success": "student created"})
 	}
