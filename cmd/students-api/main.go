@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/Aytaditya/students-api-golang/internal/config"
+	"github.com/Aytaditya/students-api-golang/internal/http/handlers/student"
 )
 
 func main() {
@@ -19,11 +20,14 @@ func main() {
 	cf := config.MustLoad() // load config
 	// 2. database setup
 	// 3. setup http server
-	router := http.NewServeMux()
+	router := http.NewServeMux() // create a new http serve mux (router)
+
 	// route 1: health check
 	router.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello Students API"))
+		w.Write([]byte("OK"))
 	})
+	// route 2: student handler
+	router.HandleFunc("POST /api/students", student.New())
 
 	server := http.Server{
 		Addr:    cf.HttpServer.Addr,
