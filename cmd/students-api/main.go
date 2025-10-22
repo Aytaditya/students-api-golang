@@ -12,13 +12,20 @@ import (
 
 	"github.com/Aytaditya/students-api-golang/internal/config"
 	"github.com/Aytaditya/students-api-golang/internal/http/handlers/student"
+	"github.com/Aytaditya/students-api-golang/internal/storage/sqlite"
 )
 
 func main() {
 	// our tasks:
 
-	cf := config.MustLoad() // load config
+	cf := config.MustLoad() // load config (this return is pointer to config struct)
 	// 2. database setup
+	_, er := sqlite.New(cf)
+	if er != nil {
+		slog.Error("Failed to connect to database", "error", er.Error())
+		return
+	}
+	slog.Info("Connected to database successfully", slog.String("storage_path", cf.StoragePath))
 	// 3. setup http server
 	router := http.NewServeMux() // create a new http serve mux (router)
 
