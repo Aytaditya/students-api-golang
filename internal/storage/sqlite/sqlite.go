@@ -54,3 +54,15 @@ func (s *Sqlite) CreateStudent(name string, email string, age int) (int64, error
 
 	return id, nil
 }
+
+func (s *Sqlite) GetStudent(id int64) (string, string, int, error) {
+	var name, email string
+	var age int
+
+	err := s.Db.QueryRow("SELECT name, email, age FROM students WHERE id = ?", id).Scan(&name, &email, &age)
+	if err != nil {
+		return "", "", 0, err
+	}
+
+	return name, email, age, nil
+}

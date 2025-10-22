@@ -33,8 +33,11 @@ func main() {
 	router.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("OK"))
 	})
-	// route 2: student handler
+	// route 2: student creation menthod
 	router.HandleFunc("POST /api/students", student.New(storage))
+
+	// route 2 (get student by id)
+	router.HandleFunc("GET /api/students/{id}", student.GetById(storage))
 
 	server := http.Server{
 		Addr:    cf.HttpServer.Addr,
