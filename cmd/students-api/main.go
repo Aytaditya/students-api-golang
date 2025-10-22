@@ -20,7 +20,7 @@ func main() {
 
 	cf := config.MustLoad() // load config (this return is pointer to config struct)
 	// 2. database setup
-	_, er := sqlite.New(cf)
+	storage, er := sqlite.New(cf)
 	if er != nil {
 		slog.Error("Failed to connect to database", "error", er.Error())
 		return
@@ -34,7 +34,7 @@ func main() {
 		w.Write([]byte("OK"))
 	})
 	// route 2: student handler
-	router.HandleFunc("POST /api/students", student.New())
+	router.HandleFunc("POST /api/students", student.New(storage))
 
 	server := http.Server{
 		Addr:    cf.HttpServer.Addr,

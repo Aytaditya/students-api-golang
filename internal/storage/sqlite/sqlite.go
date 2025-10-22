@@ -34,3 +34,23 @@ func New(cfg *config.Config) (*Sqlite, error) {
 		Db: db}, nil
 
 }
+
+func (s *Sqlite) CreateStudent(name string, email string, age int) (int64, error) {
+	// doing like this to prevent sql injection
+	stmt, err := s.Db.Prepare("INSERT INTO students (name, email, age) VALUES (?, ?, ?)")
+	if err != nil {
+		return 0, err
+	}
+	defer stmt.Close()
+	res, er := stmt.Exec(name, email, age)
+	if er != nil {
+		return 0, er
+	}
+	// getting last inserted id
+	id, err := res.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+
+	return id, nil
+}
